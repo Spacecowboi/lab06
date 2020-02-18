@@ -1,0 +1,25 @@
+{
+  "name": "lab06",
+  "version": "1.0.0",
+  "description": "**Author**: Anthony Cunningham **Version**:1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spacecowboi/lab06.git"
+  },
+  "author": "Anthony Cunningham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Spacecowboi/lab06/issues"
+  },
+  "homepage": "https://github.com/Spacecowboi/lab06#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}
