@@ -14,7 +14,7 @@ const cors = require('cors');
 app.use(cors());
 
 // get the port from the env
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 app.get('/location', (request, response) => {
   try{
