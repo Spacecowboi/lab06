@@ -20,15 +20,7 @@ app.get('/location', (request, response) => {
   try{
     let city = request.query.city;
     let geoData = require('./data/geo.json');
-
     let location = new City(city, geoData[0]);
-    // let dataObj = {
-    //   "search_query": city,
-    //   "formatted_query": geoData[0].display_name,
-    //   "latitude": geoData[0].lat,
-    //   "longitude": geoData[0].lon
-    // }
-
     response.send(location);
   }
   catch (err){
