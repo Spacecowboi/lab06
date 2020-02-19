@@ -31,3 +31,14 @@
 ## Credits and Collaborations
 
 - Feb 18, 2020, worked in collaboration with Brandon Gibbs.
+
+
+Number and name of feature: Lab 07 - .map
+
+Estimate of time needed to complete: 5 hrs
+
+Start time: 10:00:00
+
+Finish time:
+
+Actual time needed to complete: 

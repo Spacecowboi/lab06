@@ -16,12 +16,18 @@ app.use(cors());
 // get the port from the env
 const PORT = process.env.PORT || 3002;
 
+const superagent = require('superagent');
+
 app.get('/location', (request, response) => {
   try{
     let city = request.query.city;
-    let geoData = require('./data/geo.json');
-    let location = new City(city, geoData[0]);
-    response.send(location);
+    let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`;
+    superagent.get(url)
+      .then(results => {
+        let geoData = results.body;
+        let location = new City(city, geoData[0]);
+        response.status(200).send(location);
+      });
   }
   catch (err){
     console.log(err);
@@ -37,7 +43,7 @@ app.get('/weather', (request, response) =>{
   weatherArray.forEach(day =>{
     newWeatherArray.push(new Weather(day));
   });
-  response.send(newWeatherArray)
+  response.send(newWeatherArray);
 });
 
 function Weather(day){
