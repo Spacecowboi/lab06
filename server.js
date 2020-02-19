@@ -42,7 +42,7 @@ function City(city, obj){
 
 app.get('/weather', (request, response) => {
   let locationObject = request.query;
-  let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${locationObject.latitude},${locationObject.longitude}`;j;
+  let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${locationObject.latitude},${locationObject.longitude}`;
   superagent.get(url)
     .then(results =>{
       //loop over array, and send each object to the constructor
