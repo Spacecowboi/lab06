@@ -33,29 +33,33 @@ app.get('/location', (request, response) => {
     console.log(err);
   }
 });
-
-app.get('/weather', (request, response) =>{
-  let {search_query, formatted_query, latitude, longitude} = request.query;
-
-  let darkSky = require('./data/darksky.json');
-  let weatherArray = darkSky.daily.data;
-  let newWeatherArray=[];
-  weatherArray.forEach(day =>{
-    newWeatherArray.push(new Weather(day));
-  });
-  response.send(newWeatherArray);
-});
-
-function Weather(day){
-  this.time = new Date(day.data.time).toDateString;
-  this.forecast = day.summary;
-}
-
 function City(city, obj){
   this.search_query = city;
   this.formatted_query = obj.display_name;
   this.latitude = obj.lat;
   this.longitude = obj.lon;
+}
+
+app.get('/weather', (request, response) => {
+  let weather = [];
+  let lat = request.query.latitude;
+  let lon = request.query.longitude;
+  let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${lon}`;j;
+  superagent.get(url)
+    .then(results =>{
+
+    });
+  let dailyData = wData.daily.data;
+  let forecast = dailyData.map(day => {
+    let newDay = new Weather(day);
+    weather.push(newDay);
+  });
+  console.log(weather);
+  response.send(weather);
+});
+function Weather(obj){
+  this.forecast = obj.summary;
+  this.time = new Date(obj.time * 1000).toString().slice(0,15);
 }
 
 // turn on the server
