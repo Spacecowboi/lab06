@@ -41,25 +41,50 @@ function City(city, obj){
 }
 
 app.get('/weather', (request, response) => {
-  let weather = [];
-  let lat = request.query.latitude;
-  let lon = request.query.longitude;
-  let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${lat},${lon}`;j;
+  let locationObject = request.query;
+  let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${locationObject.latitude},${locationObject.longitude}`;j;
   superagent.get(url)
     .then(results =>{
+      //loop over array, and send each object to the constructor
+      let weatherArray = results.body.daily.data;
+      let weatherMap = weatherArray.map(day => new Weather (day));
+      response.status(200).send(weatherMap);
 
     });
-  let dailyData = wData.daily.data;
-  let forecast = dailyData.map(day => {
-    let newDay = new Weather(day);
-    weather.push(newDay);
-  });
-  console.log(weather);
-  response.send(weather);
 });
+
+app.get('/trails', (request, response) =>{
+  let { search_query,
+    formatted_query,
+    latitude,
+    longitude, } = request.query;
+
+  let url = `https://www.hikingproject.com/data/get-trails?lat=40.0274&lon=-105.2519&maxDistance=10&key=${process.env.HIKING_TRAIL_API}`; //insert trails url here
+
+  superagent.get(url)
+    .then(results =>{
+      const dataObj = results.body.trails.map(trail=>Trails(trail));
+      response.status(200).send(dataObj);
+    });
+
+});
+
 function Weather(obj){
   this.forecast = obj.summary;
-  this.time = new Date(obj.time * 1000).toString().slice(0,15);
+  this.time = new Date(obj.time * 1000).toDateString();
+}
+
+function Trails(obj){
+  this.name = obj.name;
+  this.location = obj.location;
+  this.length = obj.length;
+  this.stars = obj.stars;
+  this.star_votes = obj.starVotes;
+  this.summary = obj.summary;
+  this.trail_url = obj.url;
+  this.conditions = obj.conditionStatus;
+  this.condition_date = obj.conditionDate.slice(0,10);
+  this.condition_time = obj.conditionDate.slice(11,19);
 }
 
 // turn on the server
