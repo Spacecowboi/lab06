@@ -28,6 +28,23 @@ app.get('/location', (request, response) => {
   }
 });
 
+app.get('/weather', (request, response) =>{
+  let {search_query, formatted_query, latitude, longitude} = request.query;
+
+  let darkSky = require('./data/darksky.json');
+  let weatherArray = darkSky.daily.data;
+  let newWeatherArray=[];
+  weatherArray.forEach(day =>{
+    newWeatherArray.push(new Weather(day));
+  });
+  response.send(newWeatherArray)
+});
+
+function Weather(day){
+  this.time = new Date(day.data.time).toDateString;
+  this.forecast = day.summary;
+}
+
 function City(city, obj){
   this.search_query = city;
   this.formatted_query = obj.display_name;
