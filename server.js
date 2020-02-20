@@ -37,7 +37,7 @@ app.get('/location', (request, response) => {
       if(results.rows.length > 0){
         response.send(results.row[0]);
       } else {
-        console.log('did not find city in db')
+        console.log('did not find city in db');
         let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`;
         superagent.get(url)
           .then(results => {

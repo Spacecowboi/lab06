@@ -9,7 +9,3 @@ CREATE TABLE locations (
     
 
 );
-
-INSERT INTO locations (id, search_query, latitude, longitude) VALUES ();
-
-SELECT * FROM locations;
