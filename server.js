@@ -59,7 +59,7 @@ app.get('/trails', (request, response) =>{
     latitude,
     longitude, } = request.query;
 
-  let url = `https://www.hikingproject.com/data/get-trails?lat=40.0274&lon=-105.2519&maxDistance=10&key=${process.env.HIKING_TRAIL_API}`; //insert trails url here
+  let url = `https://www.hikingproject.com/data/get-trails?lat=${latitude}&lon=${longitude}&maxResults=10&key=${process.env.HIKING_TRAIL_API}`; //insert trails url here
 
   superagent.get(url)
     .then(results =>{
