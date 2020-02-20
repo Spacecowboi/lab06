@@ -17,7 +17,7 @@ app.use(cors());
 const PORT = process.env.PORT || 3002;
 
 const superagent = require('superagent');
-
+//cities
 app.get('/location', (request, response) => {
   try{
     let city = request.query.city;
@@ -33,6 +33,7 @@ app.get('/location', (request, response) => {
     console.log(err);
   }
 });
+
 function City(city, obj){
   this.search_query = city;
   this.formatted_query = obj.display_name;
@@ -40,12 +41,14 @@ function City(city, obj){
   this.longitude = obj.lon;
 }
 
+//weather
+
 app.get('/weather', (request, response) => {
   let locationObject = request.query;
   let url = `https://api.darksky.net/forecast/${process.env.DARK_SKY_API}/${locationObject.latitude},${locationObject.longitude}`;
   superagent.get(url)
     .then(results =>{
-      //loop over array, and send each object to the constructor
+    //loop over array, and send each object to the constructor
       let weatherArray = results.body.daily.data;
       let weatherMap = weatherArray.map(day => new Weather (day));
       response.status(200).send(weatherMap);
@@ -53,6 +56,12 @@ app.get('/weather', (request, response) => {
     });
 });
 
+function Weather(obj){
+  this.forecast = obj.summary;
+  this.time = new Date(obj.time * 1000).toDateString();
+}
+
+//trails
 app.get('/trails', (request, response) =>{
   let { search_query,
     formatted_query,
@@ -63,16 +72,12 @@ app.get('/trails', (request, response) =>{
 
   superagent.get(url)
     .then(results =>{
-      const dataObj = results.body.trails.map(trail=>Trails(trail));
+      const dataObj = results.body.trails.map(trail=>new Trails(trail));
       response.status(200).send(dataObj);
     });
 
 });
 
-function Weather(obj){
-  this.forecast = obj.summary;
-  this.time = new Date(obj.time * 1000).toDateString();
-}
 
 function Trails(obj){
   this.name = obj.name;
