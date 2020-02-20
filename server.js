@@ -19,12 +19,14 @@ app.use(cors());
 const PORT = process.env.PORT || 3002;
 
 // server set up
-const client = new pg.Client(process.env.DATABASE_URL);
-client.on('error', err => console.error(err));
-client.connect();
+const database = new pg.Client(process.env.DATABASE_URL);
+database.on('error', err => console.error(err));
+database.connect();
 
 const superagent = require('superagent');
+
 //cities
+
 app.get('/location', (request, response) => {
   try{
     let city = request.query.city;
@@ -99,7 +101,21 @@ function Trails(obj){
   this.condition_time = obj.conditionDate.slice(11,19);
 }
 
+app.get('/display', (request, response) =>{
+  let SQL = 'SELECT * FROM people';
+
+  database.query(SQL)
+    .then(results => {
+      response.json(results.rows);
+    });
+});
+
+database.connect()
+  .then(
+    app.listen(PORT, () => console.log(`listening on ${PORT}`))
+  );
 // turn on the server
+
 app.listen(PORT, () => {
   console.log(`listening to ${PORT}`);
 });
