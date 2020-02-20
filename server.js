@@ -3,6 +3,8 @@
 // brings in the expresss library which is our server
 const express = require('express');
 
+const pg = require('pg');
+
 // instantiates the express library in app
 const app = express();
 
@@ -15,6 +17,11 @@ app.use(cors());
 
 // get the port from the env
 const PORT = process.env.PORT || 3002;
+
+// server set up
+const client = new pg.Client(process.env.DATABASE_URL);
+client.on('error', err => console.error(err));
+client.connect();
 
 const superagent = require('superagent');
 //cities
