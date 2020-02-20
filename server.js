@@ -18,7 +18,7 @@ app.use(cors());
 // get the port from the env
 const PORT = process.env.PORT || 3002;
 
-// server set up
+// server set up(means by which we get INTO the sytem)
 const database = new pg.Client(process.env.DATABASE_URL);
 database.on('error', err => console.error(err));
 database.connect();

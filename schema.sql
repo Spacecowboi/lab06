@@ -1,11 +1,15 @@
 DROP TABLE IF EXISTS people;
 
-CREATE TABLE people (
+CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(255),
-    last_name VARCHAR(255)
+    search_query VARCHAR(255),
+    formatted_query VARCHAR(255),
+    latitude NUMERIC (10, 7),
+    longitude NUMERIC (10, 7),
+    
+
 );
 
-INSERT INTO people (first_name, last_name) VALUES ('Carrington', 'Beard');
+INSERT INTO locations (id, search_query, latitude, longitude) VALUES ();
 
 SELECT * FROM people;
