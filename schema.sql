@@ -5,7 +5,5 @@ CREATE TABLE locations (
     search_query VARCHAR(255),
     formatted_query VARCHAR(255),
     latitude NUMERIC (9, 5),
-    longitude NUMERIC (9, 5),
-    
-
+    longitude NUMERIC (9, 5)
 );

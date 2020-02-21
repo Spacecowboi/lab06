@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 
 // brings in the expresss library which is our server
 const express = require('express');
@@ -8,8 +9,7 @@ const pg = require('pg');
 // instantiates the express library in app
 const app = express();
 
-// lets us go into the .env and get the variables
-require('dotenv').config();
+
 
 // the policeman - lets the server know that it is OK to give information to the front end
 const cors = require('cors');
@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3002;
 // server set up(means by which we get INTO the sytem)
 const database = new pg.Client(process.env.DATABASE_URL);
 database.on('error', err => console.error(err));
-database.connect();
+
 
 const superagent = require('superagent');
 
@@ -123,8 +123,3 @@ database.connect()
   .then(
     app.listen(PORT, () => console.log(`listening on ${PORT}`))
   );
-// turn on the server
-
-app.listen(PORT, () => {
-  console.log(`listening to ${PORT}`);
-});
