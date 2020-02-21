@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 
 // brings in the expresss library which is our server
 const express = require('express');
@@ -8,8 +9,7 @@ const pg = require('pg');
 // instantiates the express library in app
 const app = express();
 
-// lets us go into the .env and get the variables
-require('dotenv').config();
+
 
 // the policeman - lets the server know that it is OK to give information to the front end
 const cors = require('cors');
@@ -21,26 +21,35 @@ const PORT = process.env.PORT || 3002;
 // server set up(means by which we get INTO the sytem)
 const database = new pg.Client(process.env.DATABASE_URL);
 database.on('error', err => console.error(err));
-database.connect();
+
 
 const superagent = require('superagent');
 
 //cities
 
 app.get('/location', (request, response) => {
-  try{
-    let city = request.query.city;
-    let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`;
-    superagent.get(url)
-      .then(results => {
-        let geoData = results.body;
-        let location = new City(city, geoData[0]);
-        response.status(200).send(location);
-      });
-  }
-  catch (err){
-    console.log(err);
-  }
+
+  let city = request.query.city;
+  let sql = 'SELECT * FROM locations WHERE search_query=$1;';
+  let safeValues = [city];
+  database.query(sql, safeValues)
+    .then (results => {
+      if(results.rows.length > 0){
+        response.send(results.row[0]);
+      } else {
+        console.log('did not find city in db');
+        let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`;
+        superagent.get(url)
+          .then(results => {
+            let geoData = results.body;
+            let location = new City(city, geoData[0]);
+            let sql = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4);';
+            let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+            database.query(sql, safeValues);
+            response.status(200).send(location);
+          });
+      }
+    });
 });
 
 function City(city, obj){
@@ -114,8 +123,3 @@ database.connect()
   .then(
     app.listen(PORT, () => console.log(`listening on ${PORT}`))
   );
-// turn on the server
-
-app.listen(PORT, () => {
-  console.log(`listening to ${PORT}`);
-});
