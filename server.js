@@ -83,17 +83,17 @@ function Weather(obj){
 app.get('/movies', (request, response) =>{
   let movieLocation = request.query.search_query;
   console.log(request.search.query);
-  let url = `https://api.themoviedb.org/3/search/movie/?api_key=${process.env.MOVIE_DB-API}&language=en-US&page=1&query=${location}`;
+  let url = `https://api.themoviedb.org/3/search/movie/?api_key=${process.env.MOVIE_DB-API}&language=en-US&page=1&query=${movieLocation}`;
   superagent.get(url)
     .then(results =>{
-      let movieData = results.body.movies;
-      let movieResults = movieData.map((data) => (new movieData(data)));
+      let movieData = results.results;
+      let movieResults = movieData.map((data) => (new Movie(data)));
       response.status(200).send(movieResults);
-    });
+    })
     .catch(err =>{
       console.error(err);
-      response.status(500).send(err)
-    })
+      response.status(500).send(err);
+    });
 });
 
 
@@ -101,19 +101,19 @@ app.get('/movies', (request, response) =>{
 app.get('/yelp', handleYelp);
 
 function handleYelp(request, response){
-  console.log(request.query)//gathers data from front end to create url
+  console.log(request.query);//gathers data from front end to create url
   let city = request.query.search_query;
-  let url = `https://api.yelp.com/v3/businesses/search?location=${city}`
+  let url = `https://api.yelp.com/v3/businesses/search?location=${city}`;
 
   superagent.get(url)
-  .set('Authorization', `Bearer${process.env.YELP_API_KEY}`)
-  .then(results =>{
-    console.log(results.body);
-    let dataObj = results.body.businesses.map(business => {
-      return new Yelper(business);
-    })
-    response.status(200).send(dataObj);
-  })
+    .set('Authorization', `Bearer${process.env.YELP_API_KEY}`)
+    .then(results =>{
+      console.log(results.body);
+      let dataObj = results.body.businesses.map(business => {
+        return new Yelper(business);
+      });
+      response.status(200).send(dataObj);
+    });
 }
 //yelp constructor
 function Yelper(obj){
@@ -130,10 +130,10 @@ function Movie(data){
   this.overview = data.overview;
   this.average_votes = data.vote_average;
   this.total_votes = data.vote_count;
-  this.image_url = https://image.tmbd.org/t/p
-  this.popularity = 
-  this.released_on =  
-};
+  this.image_url ='https://image.tmdb.org/t/p/w500' + data.poster_path;
+  this.popularity = data.popularity;
+  this.released_on =  data.release_date;
+}
 
 
 //trails
