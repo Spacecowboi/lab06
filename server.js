@@ -96,6 +96,33 @@ app.get('/movies', (request, response) =>{
     })
 });
 
+
+
+app.get('/yelp', handleYelp);
+
+function handleYelp(request, response){
+  console.log(request.query)//gathers data from front end to create url
+  let city = request.query.search_query;
+  let url = `https://api.yelp.com/v3/businesses/search?location=${city}`
+
+  superagent.get(url)
+  .set('Authorization', `Bearer${process.env.YELP_API_KEY}`)
+  .then(results =>{
+    console.log(results.body);
+    let dataObj = results.body.businesses.map(business => {
+      return new Yelper(business);
+    })
+    response.status(200).send(dataObj);
+  })
+}
+//yelp constructor
+function Yelper(obj){
+  this.name = obj.name;
+  this.image_url = obj.image_url;
+  this.price = obj.price;
+  this.rating = obj.rating;
+  this.url = obj.url;
+}
 //movie Constructor
 
 function Movie(data){
@@ -106,9 +133,7 @@ function Movie(data){
   this.image_url = https://image.tmbd.org/t/p
   this.popularity = 
   this.released_on =  
-
-
-}
+};
 
 
 //trails
