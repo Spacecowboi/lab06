@@ -84,7 +84,6 @@ function Weather(obj){
 //movies
 app.get('/movies', (request, response) =>{
   let movieLocation = request.query.search_query;
-  console.log('request search query', request.search.query);
   let url = `https://api.themoviedb.org/3/search/movie/?api_key=${process.env.MOVIE_API_KEY}&language=en-US&page=1&query=${movieLocation}`;
   superagent.get(url)
     .then(result =>{
@@ -108,7 +107,7 @@ function handleYelp(request, response){
   let url = `https://api.yelp.com/v3/businesses/search?location=${city}`;
 
   superagent.get(url)
-    .set('Authorization', `Bearer${process.env.YELP_API_KEY}`)
+    .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(results =>{
       console.log(results.body);
       let dataObj = results.body.businesses.map(business => {
