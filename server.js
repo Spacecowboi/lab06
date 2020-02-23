@@ -28,14 +28,13 @@ const superagent = require('superagent');
 //cities
 
 app.get('/location', (request, response) => {
-
   let city = request.query.city;
   let sql = 'SELECT * FROM locations WHERE search_query=$1;';
   let safeValues = [city];
   database.query(sql, safeValues)
     .then (results => {
-      if(results.rows.length > 0){
-        response.send(results.row[0]);
+      if(results.length > 0){
+        response.send(results[0]);
       } else {
         console.log('did not find city in db');
         let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${city}&format=json`;
@@ -49,7 +48,10 @@ app.get('/location', (request, response) => {
             response.status(200).send(location);
           });
       }
-    });
+    })
+    // .catch(err =>{
+    //   console.error(err);
+    // });
 });
 
 function City(city, obj){
@@ -82,11 +84,11 @@ function Weather(obj){
 //movies
 app.get('/movies', (request, response) =>{
   let movieLocation = request.query.search_query;
-  console.log(request.search.query);
-  let url = `https://api.themoviedb.org/3/search/movie/?api_key=${process.env.MOVIE_DB-API}&language=en-US&page=1&query=${movieLocation}`;
+  console.log('request search query', request.search.query);
+  let url = `https://api.themoviedb.org/3/search/movie/?api_key=${process.env.MOVIE_API_KEY}&language=en-US&page=1&query=${movieLocation}`;
   superagent.get(url)
-    .then(results =>{
-      let movieData = results.results;
+    .then(result =>{
+      let movieData = result.body.results;
       let movieResults = movieData.map((data) => (new Movie(data)));
       response.status(200).send(movieResults);
     })
@@ -128,11 +130,11 @@ function Yelper(obj){
 function Movie(data){
   this.title = data.title;
   this.overview = data.overview;
-  this.average_votes = data.vote_average;
-  this.total_votes = data.vote_count;
-  this.image_url ='https://image.tmdb.org/t/p/w500' + data.poster_path;
+  this.vote_average = data.vote_average;
+  this.vote_count = data.vote_count;
+  this.image_url =`https://image.tmdb.org/t/p/w500${data.poster_path}`;
   this.popularity = data.popularity;
-  this.released_on =  data.release_date;
+  this.release_date =  data.release_date;
 }
 
 
@@ -179,4 +181,6 @@ app.get('/display', (request, response) =>{
 database.connect()
   .then(
     app.listen(PORT, () => console.log(`listening on ${PORT}`))
-  );
+  ).catch(err =>{
+    console.error(err);
+  });
