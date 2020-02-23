@@ -108,7 +108,7 @@ function handleYelp(request, response){
   let url = `https://api.yelp.com/v3/businesses/search?location=${city}`;
 
   superagent.get(url)
-    .set('Authorization', `Bearer${process.env.YELP_API_KEY}`)
+    .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(results =>{
       console.log(results.body);
       let dataObj = results.body.businesses.map(business => {
